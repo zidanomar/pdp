@@ -53,19 +53,12 @@ public class FileUtility {
 	public static void cloneRepository(String repoURL, File destinationPath) throws Exception {
 		System.out.println("Validating url...");
 		validateRepoUrl(repoURL);
-		
-		System.out.println("Cleaning up working destination directory...");
-		if (destinationPath.exists()) {
-			if (!deleteFolder(destinationPath)) {
-				throw new Exception("Failed to delete existing destination folder, administrator required");
-			}
-		}
 
 		System.out.println("Clonning repository...");
 
 		CloneCommand cloneCommand = Git.cloneRepository().setURI(repoURL).setDirectory(destinationPath);
 		try (Git git = cloneCommand.call()) {
-			System.out.println("Repository cloned successfully!");
+			System.out.println("Repository cloned successfully!\n");
 		}
 	}
 
@@ -77,12 +70,12 @@ public class FileUtility {
 					deleteFolder(file);
 				} else {
 					if (!file.delete()) {
-						return false; // Unable to delete file
+						return false;
 					}
 				}
 			}
 		}
-		return folder.delete(); // Delete the empty directory
+		return folder.delete();
 	}
 
 	public static void validateRepoUrl(String url) throws Exception {

@@ -9,15 +9,16 @@
 package main;
 
 import java.io.File;
-import java.util.Iterator;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) {
+		long timestamp = System.currentTimeMillis();
 		String cwd = System.getProperty("user.dir");
-		String destinationPath = cwd + File.separator + "public";
-		File workingDir = new File(destinationPath);
+		String path = Paths.get(cwd, "public", String.valueOf(timestamp)).toString();
+		File workingDir = new File(path);
 
 		try (Scanner scanner = new Scanner(System.in)) {
 			System.out.print("Enter Git repository URL: ");
@@ -28,19 +29,24 @@ public class Main {
 				FileUtility.processFiles(workingDir);
 			} catch (Exception e) {
 				System.err.println("Error cloning repository: " + e.getMessage());
-
 				exitProgram();
 			}
 		}
 
+		FileUtility.deleteFolder(workingDir);
+
 	}
 
-	public static void exitProgram() throws InterruptedException {
-		for (int i = 3; i < 0; i--) {
+	public static void exitProgram() {
+		for (int i = 3; i > 0; i--) {
 			System.err.println("Exiting program in " + i + "s...");
-			Thread.sleep(1000);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// Ignore interruption
+			}
+
 		}
-		
 		System.exit(1);
 	}
 
