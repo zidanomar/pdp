@@ -1,3 +1,10 @@
+/**
+* @author	Zidan Omar Hamid | zidanomar.hamid@ogr.sakarya.edu.tr
+* @since	March 17, 2024
+* <p>
+* File Utility Class
+* </p>
+*/
 package main;
 
 import java.io.BufferedReader;

@@ -1,5 +1,4 @@
 /**
-*
 * @author	Zidan Omar Hamid | zidanomar.hamid@ogr.sakarya.edu.tr
 * @since	March 12, 2024
 * <p>
