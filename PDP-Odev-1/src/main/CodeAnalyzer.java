@@ -34,10 +34,10 @@ public class CodeAnalyzer {
 		javadocCounterArr[0] = 0;
 		javadocCounterArr[1] = false;
 
-		Object[] commentLineCounterArr = new Object[2];
+		Object[] commentLineCounterArr = new Object[3];
 		commentLineCounterArr[0] = 0;
 		commentLineCounterArr[1] = false;
-		Pattern inlineCommentPattern = Pattern.compile("//.*$|(?<=\\S)\\s*//.*$");
+		commentLineCounterArr[2] = false;
 
 		Object[] codeLineCounterArr = new Object[2];
 		codeLineCounterArr[0] = 0;
@@ -56,7 +56,7 @@ public class CodeAnalyzer {
 				line = line.trim();
 				lineCounter++;
 				countJavadocLine(javadocCounterArr, line);
-				countCommentLine(commentLineCounterArr, inlineCommentPattern, line);
+				countCommentLine(commentLineCounterArr, line);
 				countCodeLine(codeLineCounterArr, line);
 				countFunction(functionCounterArr, methodPattern, line);
 			}
@@ -91,22 +91,28 @@ public class CodeAnalyzer {
 		javadocCounterArr[1] = inJavaDoc;
 	}
 
-	private void countCommentLine(Object[] commentLineCounterArr, Pattern inlineCommentPattern, String line) {
+	private void countCommentLine(Object[] commentLineCounterArr, String line) {
+		Pattern inlineCommentPattern = Pattern.compile("//.*|/\\\\*(?:.|[\\\\n\\\\r])*?\\\\*/");
+		Matcher inlineCommentMatcher = inlineCommentPattern.matcher(line);
+
+		Pattern endCommentPattern = Pattern.compile("\\*/");
+		Matcher endCommentMatcher = endCommentPattern.matcher(line);
+
 		int commentLineCounter = (int) commentLineCounterArr[0];
 		boolean inMultilineComment = (boolean) commentLineCounterArr[1];
+		boolean inJavadoc = (boolean) commentLineCounterArr[2];
 
-		Matcher inlineCommentMatcher = inlineCommentPattern.matcher(line);
-		if (inlineCommentMatcher.find()) {
+		if (inlineCommentMatcher.find() && !inJavadoc) {
 			commentLineCounter++;
-
+			commentLineCounterArr[0] = commentLineCounter;
+			commentLineCounterArr[1] = inMultilineComment;
+			commentLineCounterArr[2] = inJavadoc;
+			return;
 		}
 
 		if (line.startsWith("/*") && !inMultilineComment && !line.startsWith("/**")) {
 			inMultilineComment = true;
 			commentLineCounter++;
-
-			Pattern endCommentPattern = Pattern.compile("\\*/");
-			Matcher endCommentMatcher = endCommentPattern.matcher(line);
 
 			if (endCommentMatcher.find()) {
 				inMultilineComment = false;
@@ -118,17 +124,30 @@ public class CodeAnalyzer {
 
 		} else if (inMultilineComment) {
 			commentLineCounter++;
+		}
+
+		if (line.startsWith("/**") && !inJavadoc) {
+			inJavadoc = true;
+		} else if (line.endsWith("*/") && inJavadoc) {
+			inJavadoc = false;
 
 		}
 
 		commentLineCounterArr[0] = commentLineCounter;
 		commentLineCounterArr[1] = inMultilineComment;
+		commentLineCounterArr[2] = inJavadoc;
 
 	}
 
 	private void countCodeLine(Object[] codeLineCounterArr, String line) {
 		int codeLineCounter = (int) codeLineCounterArr[0];
 		boolean inComment = (boolean) codeLineCounterArr[1];
+		
+		if (line.startsWith("//")) {
+			codeLineCounterArr[0] = codeLineCounter;
+			codeLineCounterArr[1] = inComment;
+			return;
+		}
 
 		if (line.startsWith("/*") && !inComment) {
 			inComment = true;
@@ -142,6 +161,7 @@ public class CodeAnalyzer {
 		} else if (line.endsWith("*/") && inComment) {
 			inComment = false;
 		} else if (!inComment) {
+			System.out.println(line);
 			codeLineCounter++;
 		}
 
