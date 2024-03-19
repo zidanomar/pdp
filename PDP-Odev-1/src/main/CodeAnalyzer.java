@@ -48,7 +48,7 @@ public class CodeAnalyzer {
 		Object[] functionCounterArr = new Object[2];
 		functionCounterArr[0] = 0;
 		functionCounterArr[1] = false;
-		Pattern methodPattern = Pattern.compile("\\b\\w+\\s+\\w+\\s*\\([^\\)]*\\)\\s*\\{?");
+
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			String line;
@@ -58,7 +58,7 @@ public class CodeAnalyzer {
 				countJavadocLine(javadocCounterArr, line);
 				countCommentLine(commentLineCounterArr, line);
 				countCodeLine(codeLineCounterArr, line);
-				countFunction(functionCounterArr, methodPattern, line);
+				countFunction(functionCounterArr, line);
 			}
 
 			this.totalJavadocLine = (int) javadocCounterArr[0];
@@ -161,7 +161,6 @@ public class CodeAnalyzer {
 		} else if (line.endsWith("*/") && inComment) {
 			inComment = false;
 		} else if (!inComment) {
-			System.out.println(line);
 			codeLineCounter++;
 		}
 
@@ -169,8 +168,8 @@ public class CodeAnalyzer {
 		codeLineCounterArr[1] = inComment;
 	}
 
-	private void countFunction(Object[] functionCounterArr, Pattern methodPattern, String line) {
-
+	private void countFunction(Object[] functionCounterArr, String line) {
+		Pattern methodPattern = Pattern.compile("\\b\\w+\\s+\\w+\\s*\\([^\\)]*\\)\\s*\\{?");
 		int functionCounter = (int) functionCounterArr[0];
 		boolean inComment = (boolean) functionCounterArr[1];
 

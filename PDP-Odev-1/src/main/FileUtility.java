@@ -51,9 +51,6 @@ public class FileUtility {
 	}
 
 	public static void cloneRepository(String repoURL, File destinationPath) throws Exception {
-		System.out.println("Validating url...");
-		validateRepoUrl(repoURL);
-
 		System.out.println("Clonning repository...");
 
 		CloneCommand cloneCommand = Git.cloneRepository().setURI(repoURL).setDirectory(destinationPath);
@@ -76,19 +73,6 @@ public class FileUtility {
 			}
 		}
 		return folder.delete();
-	}
-
-	public static void validateRepoUrl(String url) throws Exception {
-		String repoUrlPattern = "^(?:https?://|git@)?(?:[\\w.]+[:/])*(?:[\\w.-]+/[\\w.-]+|[\\w.-]+)\\.git$";
-
-		if (url == null || url.isBlank()) {
-			throw new Exception("Invalid Git repository URL");
-		}
-		Pattern pattern = Pattern.compile(repoUrlPattern);
-		Matcher matcher = pattern.matcher(url);
-
-		if (!matcher.matches())
-			throw new Exception("Invalid Git repository URL");
 	}
 
 }
