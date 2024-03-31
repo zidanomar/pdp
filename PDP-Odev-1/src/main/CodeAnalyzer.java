@@ -45,10 +45,8 @@ public class CodeAnalyzer {
 
 		int lineCounter = 0;
 
-		Object[] functionCounterArr = new Object[2];
+		Object[] functionCounterArr = new Object[1];
 		functionCounterArr[0] = 0;
-		functionCounterArr[1] = false;
-
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			String line;
@@ -79,10 +77,8 @@ public class CodeAnalyzer {
 		line = line.trim();
 		if (line.startsWith("/**")) {
 			inJavaDoc = true;
-			counter++;
 		} else if (line.startsWith("*/") && inJavaDoc) {
 			inJavaDoc = false;
-			counter++;
 		} else if (line.startsWith("*") && inJavaDoc) {
 			counter++;
 		}
@@ -112,7 +108,6 @@ public class CodeAnalyzer {
 
 		if (line.startsWith("/*") && !inMultilineComment && !line.startsWith("/**")) {
 			inMultilineComment = true;
-			commentLineCounter++;
 
 			if (endCommentMatcher.find()) {
 				inMultilineComment = false;
@@ -120,7 +115,6 @@ public class CodeAnalyzer {
 
 		} else if (line.endsWith("*/") && inMultilineComment) {
 			inMultilineComment = false;
-			commentLineCounter++;
 
 		} else if (inMultilineComment) {
 			commentLineCounter++;
@@ -130,7 +124,6 @@ public class CodeAnalyzer {
 			inJavadoc = true;
 		} else if (line.endsWith("*/") && inJavadoc) {
 			inJavadoc = false;
-
 		}
 
 		commentLineCounterArr[0] = commentLineCounter;
@@ -142,7 +135,7 @@ public class CodeAnalyzer {
 	private void countCodeLine(Object[] codeLineCounterArr, String line) {
 		int codeLineCounter = (int) codeLineCounterArr[0];
 		boolean inComment = (boolean) codeLineCounterArr[1];
-		
+
 		if (line.startsWith("//")) {
 			codeLineCounterArr[0] = codeLineCounter;
 			codeLineCounterArr[1] = inComment;
@@ -160,7 +153,7 @@ public class CodeAnalyzer {
 			}
 		} else if (line.endsWith("*/") && inComment) {
 			inComment = false;
-		} else if (!inComment) {
+		} else if (!inComment && !line.trim().isEmpty()) {
 			codeLineCounter++;
 		}
 
@@ -169,25 +162,17 @@ public class CodeAnalyzer {
 	}
 
 	private void countFunction(Object[] functionCounterArr, String line) {
-		Pattern methodPattern = Pattern.compile("\\b\\w+\\s+\\w+\\s*\\([^\\)]*\\)\\s*\\{?");
+		Pattern methodPattern = Pattern.compile(
+				"^\\s*(?:(?:public|protected|private)\\s+)?(?:static\\s+)?(?:final\\s+)?(?:synchronized\\s+)?(?:abstract\\s+)?(?:native\\s+)?(?:strictfp\\s+)?\\w+\\s+\\w+\\s*\\([^)]*\\)\\s*\\{?\\s*$");
 		int functionCounter = (int) functionCounterArr[0];
-		boolean inComment = (boolean) functionCounterArr[1];
 
-		if (line.startsWith("/*")) {
-			inComment = true;
-		}
-		if (inComment && line.endsWith("*/")) {
-			inComment = false;
-		}
-
-		Matcher matcher = methodPattern.matcher(line);
+		Matcher matcher = methodPattern.matcher(line.trim());
 
 		while (matcher.find()) {
 			functionCounter++;
 		}
 
 		functionCounterArr[0] = functionCounter;
-		functionCounterArr[1] = inComment;
 	}
 
 	private double calculateCommentDeviation() {
