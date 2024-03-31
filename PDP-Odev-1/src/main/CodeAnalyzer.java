@@ -1,10 +1,3 @@
-/**
-* @author	Zidan Omar Hamid | zidanomar.hamid@ogr.sakarya.edu.tr
-* @since	March 17, 2024
-* <p>
-* Code Analyzer Class
-* </p>
-*/
 package main;
 
 import java.io.BufferedReader;
@@ -15,6 +8,13 @@ import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author Zidan Omar Hamid | zidan.hamid@ogr.sakarya.edu.tr
+ * @since March 17, 2024
+ *        <p>
+ *        Code Analyzer Class
+ *        </p>
+ */
 public class CodeAnalyzer {
 	private String fileName;
 	private int totalJavadocLine; // Javadoc olarak yorum satır sayısı
@@ -29,6 +29,13 @@ public class CodeAnalyzer {
 		analyzeFile(file);
 	}
 
+	/**
+	 * <p>
+	 * Analyze file
+	 * </p>
+	 * 
+	 * @param file
+	 */
 	private void analyzeFile(File file) {
 		Object[] javadocCounterArr = new Object[2];
 		javadocCounterArr[0] = 0;
@@ -70,6 +77,14 @@ public class CodeAnalyzer {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Count javadoc line
+	 * </p>
+	 * 
+	 * @param javadoc counter array
+	 * @param line    of string
+	 */
 	private void countJavadocLine(Object[] javadocCounterArr, String line) {
 		int counter = (int) javadocCounterArr[0];
 		boolean inJavaDoc = (boolean) javadocCounterArr[1];
@@ -87,6 +102,14 @@ public class CodeAnalyzer {
 		javadocCounterArr[1] = inJavaDoc;
 	}
 
+	/**
+	 * <p>
+	 * Count comment line
+	 * </p>
+	 * 
+	 * @param comment counter array
+	 * @param line    of string
+	 */
 	private void countCommentLine(Object[] commentLineCounterArr, String line) {
 		Pattern inlineCommentPattern = Pattern.compile("//.*|/\\\\*(?:.|[\\\\n\\\\r])*?\\\\*/");
 		Matcher inlineCommentMatcher = inlineCommentPattern.matcher(line);
@@ -132,6 +155,14 @@ public class CodeAnalyzer {
 
 	}
 
+	/**
+	 * <p>
+	 * Count code line
+	 * </p>
+	 * 
+	 * @param code line counter array
+	 * @param line of string
+	 */
 	private void countCodeLine(Object[] codeLineCounterArr, String line) {
 		int codeLineCounter = (int) codeLineCounterArr[0];
 		boolean inComment = (boolean) codeLineCounterArr[1];
@@ -161,20 +192,31 @@ public class CodeAnalyzer {
 		codeLineCounterArr[1] = inComment;
 	}
 
+	/**
+	 * <p>
+	 * Count function
+	 * </p>
+	 * 
+	 * @param function counter array
+	 * @param line     of string
+	 */
 	private void countFunction(Object[] functionCounterArr, String line) {
 		Pattern methodPattern = Pattern.compile(
 				"^\\s*(?:(?:public|protected|private)\\s+)?(?:static\\s+)?(?:final\\s+)?(?:synchronized\\s+)?(?:abstract\\s+)?(?:native\\s+)?(?:strictfp\\s+)?\\w+\\s+\\w+\\s*\\([^)]*\\)\\s*\\{?\\s*$");
 		int functionCounter = (int) functionCounterArr[0];
-
 		Matcher matcher = methodPattern.matcher(line.trim());
 
-		while (matcher.find()) {
+		if (matcher.matches())
 			functionCounter++;
-		}
 
 		functionCounterArr[0] = functionCounter;
 	}
 
+	/**
+	 * <p>
+	 * Calculate comment deviation
+	 * </p>
+	 */
 	private double calculateCommentDeviation() {
 		if (this.totalFunction == 0)
 			return Double.POSITIVE_INFINITY;
@@ -191,6 +233,11 @@ public class CodeAnalyzer {
 
 	}
 
+	/**
+	 * <p>
+	 * Helper funtion to print file statistic
+	 * </p>
+	 */
 	public void printStatistics() {
 		System.out.println("Sinif: " + this.fileName);
 		System.out.println("Javadoc Satır Sayısı: " + this.totalJavadocLine);

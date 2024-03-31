@@ -1,10 +1,3 @@
-/**
-* @author	Zidan Omar Hamid | zidanomar.hamid@ogr.sakarya.edu.tr
-* @since	March 17, 2024
-* <p>
-* File Utility Class
-* </p>
-*/
 package main;
 
 import java.io.BufferedReader;
@@ -17,6 +10,13 @@ import java.util.regex.Pattern;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 
+/**
+ * @author Zidan Omar Hamid | zidan.hamid@ogr.sakarya.edu.tr
+ * @since March 17, 2024
+ *        <p>
+ *        File Utility Class
+ *        </p>
+ */
 public class FileUtility {
 	public static void processFiles(File directory) {
 		File[] files = directory.listFiles();
