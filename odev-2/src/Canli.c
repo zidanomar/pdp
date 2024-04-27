@@ -1,34 +1,25 @@
 #include "Canli.h"
 
-char* IdentifyCanli(int num) {
-    if (num <= 9) {
-        return "B";
-    }
-    else if (num <= 20) {
-        return "C";
-    }
-    else if (num <= 50) {
-        return "S";
-    }
-    else if (num <= 99) {
-        return "P";
-    }
-    else {
-        return NULL; 
-    }
-}
-
-
 Canli NewCanli(int life) {
   Canli this;
   this = (Canli)malloc(sizeof(struct CANLI));
+  
+  this->isAlive = true;
   this->life = life;
-  this->GetCanli = &GetCanli;
-  this->delete = &DeleteCanli;
+
+  this->GetLife = &GetLife;
+  this->GetType = &GetType;
+  this->DeleteCanli = &DeleteCanli;
+
+  return this;
 };
 
-char* GetCanli(const Canli this) {
-  return IdentifyCanli(this->life);
+int GetLife(const Canli this) {
+  return this->life;
+};
+
+char* GetType(const Canli this) {
+  return this->type;
 };
 
 void DeleteCanli(const Canli this){

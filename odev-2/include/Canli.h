@@ -6,16 +6,21 @@
 typedef enum Bool{false, true}boolean;
 
 struct CANLI{
+  boolean isAlive;
+  
   int life;
+  int (*GetLife)();
 
-  char* (*GetCanli)();
-  void (*delete)(struct CANLI*);
+  char* type;
+  char* (*GetType)();
+  
+  void (*DeleteCanli)(struct CANLI*);
 };
 typedef struct CANLI* Canli;
 
 Canli NewCanli(int);
-char* GetCanli(const Canli);
+int GetLife(const Canli);
+char* GetType(const Canli); // Görünüm fonksiyonu
 void DeleteCanli(const Canli);
-
 
 #endif
