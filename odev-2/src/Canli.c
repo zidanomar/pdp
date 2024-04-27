@@ -1,14 +1,15 @@
 #include "Canli.h"
 
-Canli NewCanli(int life) {
+Canli NewCanli(int life, char* typeID) {
   Canli this;
   this = (Canli)malloc(sizeof(struct CANLI));
   
+  this->typeID = typeID;
   this->isAlive = true;
   this->life = life;
 
   this->GetLife = &GetLife;
-  this->GetType = &GetType;
+  this->GetTypeID = &GetTypeID;
   this->DeleteCanli = &DeleteCanli;
 
   return this;
@@ -18,8 +19,8 @@ int GetLife(const Canli this) {
   return this->life;
 };
 
-char* GetType(const Canli this) {
-  return this->type;
+char* GetTypeID(const Canli this) {
+  return this->typeID;
 };
 
 void DeleteCanli(const Canli this){

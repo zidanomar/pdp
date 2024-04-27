@@ -1,8 +1,4 @@
 #include "Habitat.h"
-#include "Bocek.h"
-
-#include <stdio.h>
-#include <stdlib.h>
 
 int initialTiles[4][5] = {
     {10, 2, 5, 4, 7},
@@ -10,49 +6,83 @@ int initialTiles[4][5] = {
     {11, 64, 33, 41, 47},
     {8, 1, 9, 5, 23}};
 
+SpeciesUnion **generateTiles(int rows, int cols)
+{
+  // Allocate memory for the tiles array
+  SpeciesUnion **tiles = (SpeciesUnion **)malloc(rows * sizeof(SpeciesUnion *));
+  if (tiles == NULL)
+  {
+    return NULL; // Return NULL if memory allocation fails
+  }
+
+  // Allocate memory for each row of the tiles array
+  for (int i = 0; i < rows; ++i)
+  {
+    tiles[i] = (SpeciesUnion *)malloc(cols * sizeof(SpeciesUnion));
+    if (tiles[i] == NULL)
+    {
+      // Free memory for previously allocated rows if allocation fails for the current row
+      for (int j = 0; j < i; j++)
+      {
+        free(tiles[j]);
+      }
+      free(tiles);
+      return NULL; // Return NULL if memory allocation fails
+    }
+  }
+
+  for (int i = 0; i < rows; ++i)
+  {
+    for (int j = 0; j < cols; ++j)
+    {
+      char *id;
+      if (initialTiles[i][j] <= 9)
+      {
+        id = "B";
+        tiles[i][j].bitki = NewBitki(initialTiles[i][j], id);
+        tiles[i][j].speciesID = 0;
+      }
+      else if (initialTiles[i][j] <= 20)
+      {
+        id = "C";
+        tiles[i][j].bocek = NewBocek(initialTiles[i][j], id);
+        tiles[i][j].speciesID = 1;
+      }
+      else if (initialTiles[i][j] <= 50)
+      {
+        id = "S";
+        tiles[i][j].sinek = NewSinek(initialTiles[i][j], id);
+        tiles[i][j].speciesID = 2;
+      }
+      else if (initialTiles[i][j] <= 99)
+      {
+        id = "P";
+        tiles[i][j].pire = NewPire(initialTiles[i][j], id);
+        tiles[i][j].speciesID = 3;
+      }
+    }
+  }
+
+  return tiles;
+}
+
+
 Habitat NewHabitat()
 {
   Habitat this;
 
   this = (Habitat)malloc(sizeof(struct HABITAT));
-  if (this == NULL) {
+  if (this == NULL)
+  {
     return NULL;
   }
 
-  this -> ROWS = 4;
-  this -> COLS = 5;
+  int rows = 4;
+  int cols = 5;
+  this->ROWS = rows;
+  this->COLS = cols;
 
-  this->tiles = (species_t **)malloc(this->ROWS * sizeof(species_t *));
-  if (this->tiles == NULL) {
-    free(this);
-    return NULL;
-  }
-  for (int i = 0; i < this->ROWS; ++i)
-  {
-    this->tiles[i] = (species_t *)malloc(this->COLS * sizeof(species_t));
-    if (this->tiles[i] == NULL) {
-      for (int j = 0; j < i; j++) {
-        free(this->tiles[j]);
-      }
-      free(this->tiles);
-      free(this);
-      return NULL;
-    }
-  }
-
-  for (int i = 0; i < this->ROWS; ++i)
-  {
-    for (int j = 0; j < this->COLS; ++j)
-    {
-      if(initialTiles[i][j] % 2 == 0){
-        this->tiles[i][j].type = 0;
-        this->tiles[i][j].bocek = NewBocek(initialTiles[i][j]);
-      } else {
-        this->tiles[i][j].type = 1;
-        this->tiles[i][j].bitki = NewBitki(initialTiles[i][j]);
-      }
-    }
-  }
+  this->tiles = generateTiles(this->ROWS, this->COLS);
 
   this->PrintHabitat = &PrintHabitat;
   this->DeleteHabitat = &DeleteHabitat;
@@ -65,35 +95,39 @@ void PrintHabitat(const Habitat this)
   {
     for (int j = 0; j < this->COLS; j++)
     {
-      if(this->tiles[i][j].type == 0){
-        printf("Bocek");
-        printf(" %d ", this->tiles[i][j].bocek->GetLife(this->tiles[i][j].bocek));
-        printf(" %s ", this->tiles[i][j].bocek->super->type);
-
-      } else {
-        printf("Bitki");
-        printf(" %d ", this->tiles[i][j].bitki->GetLife(this->tiles[i][j].bitki));
-        printf(" %s ", this->tiles[i][j].bitki->super->type);
+      switch (this->tiles[i][j].speciesID)
+      {
+      case 0:
+        printf("%d ", this->tiles[i][j].speciesID);
+        this->tiles[i][j].bitki->PrintHello();
+        break;
+      // case 1:
+      //   printf("%c ", this->tiles[i][j].speciesID);
+      //   break;
+      // case 2:
+      //   printf("%c ", this->tiles[i][j].speciesID);
+      //   break;
+      // case 3:
+      //   printf("%c ", this->tiles[i][j].speciesID);
+      //   break;
+      default:
+        break;
       }
     }
     printf("\n");
   }
 };
 
-void DeleteHabitat(const Habitat this) {
-  printf("Deleting habitat\n");
-    for (int i = 0; i < this->ROWS; ++i) {
-        for (int j = 0; j < this->COLS; j++) {
-            if (this->tiles[i][j].type == 0) {
-                this->tiles[i][j].bocek->DeleteBocek(this->tiles[i][j].bocek);
-            } else {
-                this->tiles[i][j].bitki->DeleteBitki(this->tiles[i][j].bitki);
-            }
-        }
-        free(this->tiles[i]);
+void DeleteHabitat(const Habitat this)
+{
+  if (this != NULL)
+  {
+    for (int i = 0; i < this->ROWS; i++)
+    {
+      // todo: clean canli
+      free(this->tiles[i]);
     }
     free(this->tiles);
-
     free(this);
-    printf("Habitat deleted\n");
+  }
 }

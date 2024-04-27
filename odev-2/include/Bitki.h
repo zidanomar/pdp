@@ -2,16 +2,18 @@
 #define BITKI_H
 
 #include "Canli.h"
-#include <stdlib.h>
+#include <stdio.h>
 
 struct BITKI{
     Canli super;
 
+    void (*PrintHello)();
     void (*DeleteBitki)(struct BITKI*);
 };
 typedef struct BITKI* Bitki;
 
-Bitki NewBitki(int);
+Bitki NewBitki(int, char*);
+void PrintHello();
 void DeleteBitki(const Bitki);
 
 

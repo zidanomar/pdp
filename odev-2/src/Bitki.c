@@ -1,22 +1,21 @@
 #include "Bitki.h"
 
-// Bitki: B
-// Böcek: C
-// Sinek: S
-// Pire: P
-
-Bitki NewBitki(int life) {
+Bitki NewBitki(int life, char* typeID) {
   Canli super;
   Bitki this;
 
   this = (Bitki)malloc(sizeof(struct BITKI));
 
-  this->super = NewCanli(life);
-  this->super->type = "B";
+  this->super = NewCanli(life, typeID);
 
+  this->PrintHello = &PrintHello;
   this->DeleteBitki = &DeleteBitki;
   
   return this;
+};
+
+void PrintHello() {
+  printf("Hello from Bitki\n");
 };
 
 void DeleteBitki(const Bitki this) {

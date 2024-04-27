@@ -1,17 +1,12 @@
 #include "Bocek.h"
 
-// Bitki: B
-// Böcek: C
-// Sinek: S
-// Pire: P
-Bocek NewBocek(int life) {
+Bocek NewBocek(int life, char* typeID) {
   Canli super;
   Bocek this;
 
   this = (Bocek)malloc(sizeof(struct BOCEK));
 
-  this->super = NewCanli(life);
-  this->super->type = "C";
+  this->super = NewCanli(life, typeID);
 
   this->DeleteBocek = &DeleteBocek;
   return this;

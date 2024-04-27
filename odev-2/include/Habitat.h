@@ -1,17 +1,24 @@
 #ifndef HABITAT_H
 #define HABITAT_H
 
-#include "Bocek.h"
+#include "Canli.h"
 #include "Bitki.h"
+#include "Bocek.h"
+#include "Sinek.h"
+#include "Pire.h"
+
+#include <stdio.h>
 
 typedef union {
-  Bocek bocek;
   Bitki bitki;
-  int type;
-} species_t;
+  Bocek bocek;
+  Sinek sinek;
+  Pire pire;
+  int speciesID;
+} SpeciesUnion;
 
 struct HABITAT{
-    species_t** tiles;
+    SpeciesUnion **tiles;
     int ROWS;
     int COLS;
     

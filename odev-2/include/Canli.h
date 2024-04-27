@@ -11,16 +11,16 @@ struct CANLI{
   int life;
   int (*GetLife)();
 
-  char* type;
-  char* (*GetType)();
+  char* typeID;
+  char* (*GetTypeID)();
   
   void (*DeleteCanli)(struct CANLI*);
 };
 typedef struct CANLI* Canli;
 
-Canli NewCanli(int);
+Canli NewCanli(int, char*);
 int GetLife(const Canli);
-char* GetType(const Canli); // Görünüm fonksiyonu
+char* GetTypeID(const Canli); // Görünüm fonksiyonu
 void DeleteCanli(const Canli);
 
 #endif
