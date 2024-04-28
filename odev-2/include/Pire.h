@@ -3,13 +3,17 @@
 
 #include "Bocek.h"
 
+#include <stdio.h>
+
 struct PIRE{
   Bocek super;
+  void (*PrintPire)(struct PIRE*);
   void (*DeletePire)(struct PIRE*);
 };
 typedef struct PIRE* Pire;
 
 Pire NewPire(int, char*);
+void PrintPire(const Pire);
 void DeletePire(const Pire);
 
 

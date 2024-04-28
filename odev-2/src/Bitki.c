@@ -8,14 +8,14 @@ Bitki NewBitki(int life, char* typeID) {
 
   this->super = NewCanli(life, typeID);
 
-  this->PrintHello = &PrintHello;
+  this->PrintBitki = &PrintBitki;
   this->DeleteBitki = &DeleteBitki;
   
   return this;
 };
 
-void PrintHello() {
-  printf("Hello from Bitki\n");
+void PrintBitki(const Bitki this) {
+  printf("%s", this->super->GetCanli(this->super));
 };
 
 void DeleteBitki(const Bitki this) {

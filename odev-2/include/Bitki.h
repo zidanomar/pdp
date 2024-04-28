@@ -7,13 +7,13 @@
 struct BITKI{
     Canli super;
 
-    void (*PrintHello)();
+    void (*PrintBitki)(struct BITKI*);
     void (*DeleteBitki)(struct BITKI*);
 };
 typedef struct BITKI* Bitki;
 
 Bitki NewBitki(int, char*);
-void PrintHello();
+void PrintBitki(const Bitki);
 void DeleteBitki(const Bitki);
 
 

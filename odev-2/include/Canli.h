@@ -1,26 +1,24 @@
 #ifndef CANLI_H
 #define CANLI_H
 
-#include "stdlib.h"
+#include <stdlib.h>
 
 typedef enum Bool{false, true}boolean;
 
 struct CANLI{
+  char* typeID;
+  int life;
   boolean isAlive;
   
-  int life;
-  int (*GetLife)();
-
-  char* typeID;
-  char* (*GetTypeID)();
-  
+  char* (*GetCanli)(struct CANLI*);
+  void (*KillCanli)(struct CANLI*);
   void (*DeleteCanli)(struct CANLI*);
 };
 typedef struct CANLI* Canli;
 
 Canli NewCanli(int, char*);
-int GetLife(const Canli);
-char* GetTypeID(const Canli); // Görünüm fonksiyonu
+char* GetCanli(const Canli); // Görünüm fonksiyonu
+void KillCanli(const Canli);
 void DeleteCanli(const Canli);
 
 #endif

@@ -2,25 +2,31 @@
 
 Canli NewCanli(int life, char* typeID) {
   Canli this;
+
   this = (Canli)malloc(sizeof(struct CANLI));
   
   this->typeID = typeID;
   this->isAlive = true;
   this->life = life;
-
-  this->GetLife = &GetLife;
-  this->GetTypeID = &GetTypeID;
+  this->GetCanli = &GetCanli;
+  this->KillCanli = &KillCanli;
   this->DeleteCanli = &DeleteCanli;
 
   return this;
 };
 
-int GetLife(const Canli this) {
-  return this->life;
+char* GetCanli(const Canli this) {
+  if (this->isAlive) {
+    return this->typeID;
+  } else {
+    char *dead = malloc(sizeof(char) * 2);
+    dead = "X";
+    return dead;
+  }
 };
 
-char* GetTypeID(const Canli this) {
-  return this->typeID;
+void KillCanli(const Canli this) {
+  this->isAlive = false;
 };
 
 void DeleteCanli(const Canli this){
