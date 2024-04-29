@@ -34,7 +34,7 @@ struct HABITAT{
     int currSurvivor[2];
     
     void (*PrintHabitat)(struct HABITAT*);
-    void (*Clash)(struct HABITAT*, int, int, int, int);
+    void (*Clash)(struct HABITAT*, int, int);
     void (*SetCurrSurvivor)(struct HABITAT*, int, int);  
     void (*DeleteHabitat)(struct HABITAT*);
 };
@@ -42,7 +42,7 @@ typedef struct HABITAT* Habitat;
 
 Habitat NewHabitat();
 void PrintHabitat(const Habitat);
-void Clash(const Habitat, int, int, int, int);
+void Clash(const Habitat, int, int);
 void SetCurrSurvivor(const Habitat, int, int);
 void DeleteHabitat(const Habitat);
 

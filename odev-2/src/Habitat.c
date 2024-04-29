@@ -67,9 +67,9 @@ Habitat NewHabitat()
   return this;
 }
 
-void Clash(Habitat habitat, int currRow, int currCol, int nextRow, int nextCol)
+void Clash(Habitat habitat, int nextRow, int nextCol)
 {
-  struct Tile tile1 = habitat->tiles[currRow][currCol];
+  struct Tile tile1 = habitat->tiles[habitat->currSurvivor[0]][habitat->currSurvivor[1]];
   struct Tile tile2 = habitat->tiles[nextRow][nextCol];
 
   // Bitki → Pire w
