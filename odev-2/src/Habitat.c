@@ -93,7 +93,7 @@ void Clash(Habitat habitat, int nextRow, int nextCol)
     {
     case TYPE_BITKI:
       // get bigger life
-      if (tile1.data.bitki->super->life > tile2.data.bitki->super->life)
+      if (tile1.data.bitki->super->life > tile2.data.bitki->super->life || tile1.data.bitki->super->life == tile2.data.bitki->super->life)
       {
         // tile2.data.bitki->super->KillCanli(tile2.data.bitki->super);
         tile2.data.bitki->KillBitki(tile2.data.bitki);
@@ -142,7 +142,7 @@ void Clash(Habitat habitat, int nextRow, int nextCol)
       break;
     case TYPE_BOCEK:
       // get bigger life
-      if (tile1.data.bocek->super->life > tile2.data.bocek->super->life)
+      if (tile1.data.bocek->super->life > tile2.data.bocek->super->life || tile1.data.bocek->super->life == tile2.data.bocek->super->life)
       {
         tile2.data.bocek->super->KillCanli(tile2.data.bocek->super);
         tile2.data.bocek->KillBocek(tile2.data.bocek);
@@ -192,7 +192,7 @@ void Clash(Habitat habitat, int nextRow, int nextCol)
       break;
     case TYPE_SINEK:
       // get bigger life
-      if (tile1.data.sinek->super->super->life > tile2.data.sinek->super->super->life)
+      if (tile1.data.sinek->super->super->life > tile2.data.sinek->super->super->life || tile1.data.sinek->super->super->life == tile2.data.sinek->super->super->life)
       {
         // tile2.data.sinek->super->super->KillCanli(tile2.data.sinek->super->super);
         tile2.data.sinek->KillSinek(tile2.data.sinek);
@@ -226,11 +226,22 @@ void Clash(Habitat habitat, int nextRow, int nextCol)
     case TYPE_BITKI:
     case TYPE_BOCEK:
     case TYPE_SINEK:
-    case TYPE_PIRE:
       // pire loses life
       // tile1.data.pire->super->super->KillCanli(tile1.data.pire->super->super);
       tile1.data.pire->KillPire(tile1.data.pire);
       habitat->SetCurrSurvivor(habitat, nextRow, nextCol);
+    case TYPE_PIRE:
+      if(tile1.data.pire->super->super->life > tile2.data.pire->super->super->life || tile1.data.pire->super->super->life == tile2.data.pire->super->super->life)
+      {
+        // tile2.data.pire->super->super->KillCanli(tile2.data.pire->super->super);
+        tile2.data.pire->KillPire(tile2.data.pire);
+      }
+      else
+      {
+        // tile1.data.pire->super->super->KillCanli(tile1.data.pire->super->super);
+        tile1.data.pire->KillPire(tile1.data.pire);
+        habitat->SetCurrSurvivor(habitat, nextRow, nextCol);
+      }
       break;
     default:
       break;
