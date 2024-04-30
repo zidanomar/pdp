@@ -1,6 +1,7 @@
 #include "Sinek.h"
 
-Sinek NewSinek(int life, char* typeID) {
+Sinek NewSinek(int life, char *typeID)
+{
   Bocek super;
   Sinek this;
 
@@ -8,16 +9,25 @@ Sinek NewSinek(int life, char* typeID) {
 
   this->super = NewBocek(life, typeID);
   this->PrintSinek = &PrintSinek;
+  this->KillSinek = &KillSinek;
   this->DeleteSinek = &DeleteSinek;
   return this;
 };
 
-void PrintSinek(const Sinek this) {
+void PrintSinek(const Sinek this)
+{
   printf("%s", this->super->super->GetCanli(this->super->super));
 };
 
-void DeleteSinek(const Sinek this){
-  if(this != NULL){
+void KillSinek(const Sinek this)
+{
+  this->super->super->KillCanli(this->super->super);
+};
+
+void DeleteSinek(const Sinek this)
+{
+  if (this != NULL)
+  {
     this->super->DeleteBocek(this->super);
     free(this);
   }

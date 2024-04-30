@@ -5,14 +5,17 @@
 
 #include <stdio.h>
 
-struct SINEK{
+struct SINEK
+{
   Bocek super;
-  void (*PrintSinek)(struct SINEK*);
-  void (*DeleteSinek)(struct SINEK*);
+  void (*PrintSinek)(struct SINEK *);
+  void (*KillSinek)(struct SINEK *);
+  void (*DeleteSinek)(struct SINEK *);
 };
-typedef struct SINEK* Sinek;
+typedef struct SINEK *Sinek;
 
-Sinek NewSinek(int, char*);
+Sinek NewSinek(int, char *);
 void PrintSinek(const Sinek);
+void KillSinek(const Sinek);
 void DeleteSinek(const Sinek);
 #endif

@@ -5,15 +5,18 @@
 
 #include <stdio.h>
 
-struct BOCEK{
+struct BOCEK
+{
   Canli super;
-  void (*PrintBocek)(struct BOCEK*);
-  void (*DeleteBocek)(struct BOCEK*);
+  void (*PrintBocek)(struct BOCEK *);
+  void (*KillBocek)(struct BOCEK *);
+  void (*DeleteBocek)(struct BOCEK *);
 };
-typedef struct BOCEK* Bocek;
+typedef struct BOCEK *Bocek;
 
-Bocek NewBocek(int, char*);
+Bocek NewBocek(int, char *);
 void PrintBocek(const Bocek);
+void KillBocek(const Bocek);
 void DeleteBocek(const Bocek);
 
 #endif

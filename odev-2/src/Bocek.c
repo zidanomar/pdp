@@ -1,6 +1,7 @@
 #include "Bocek.h"
 
-Bocek NewBocek(int life, char* typeID) {
+Bocek NewBocek(int life, char *typeID)
+{
   Canli super;
   Bocek this;
 
@@ -8,17 +9,26 @@ Bocek NewBocek(int life, char* typeID) {
 
   this->super = NewCanli(life, typeID);
   this->PrintBocek = &PrintBocek;
+  this->KillBocek = &KillBocek;
   this->DeleteBocek = &DeleteBocek;
   return this;
 };
-typedef struct BOCEK* Bocek;
+typedef struct BOCEK *Bocek;
 
-void PrintBocek(const Bocek this) {
+void PrintBocek(const Bocek this)
+{
   printf("%s", this->super->GetCanli(this->super));
 };
 
-void DeleteBocek(const Bocek this){
-  if(this != NULL){
+void KillBocek(const Bocek this)
+{
+  this->super->KillCanli(this->super);
+};
+
+void DeleteBocek(const Bocek this)
+{
+  if (this != NULL)
+  {
     this->super->DeleteCanli(this->super);
     free(this);
   }

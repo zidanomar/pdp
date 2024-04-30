@@ -7,43 +7,50 @@
 #include "Pire.h"
 
 #include <stdio.h>
+#include <string.h>
 
- enum SpeciesType {
+enum SpeciesType
+{
   TYPE_BITKI,
   TYPE_BOCEK,
   TYPE_SINEK,
   TYPE_PIRE,
 };
 
- union SpeciesUnion {
+union SpeciesUnion
+{
   Bitki bitki;
   Bocek bocek;
   Sinek sinek;
   Pire pire;
 };
 
-struct Tile {
+struct Tile
+{
   enum SpeciesType type;
   union SpeciesUnion data;
 };
 
-struct HABITAT{
-    struct Tile **tiles;
-    int ROWS;
-    int COLS;
-    int currSurvivor[2];
-    
-    void (*PrintHabitat)(struct HABITAT*);
-    void (*Clash)(struct HABITAT*, int, int);
-    void (*SetCurrSurvivor)(struct HABITAT*, int, int);  
-    void (*DeleteHabitat)(struct HABITAT*);
+struct HABITAT
+{
+  struct Tile **tiles;
+  int ROWS;
+  int COLS;
+  int currSurvivor[2];
+
+  void (*PrintHabitat)(struct HABITAT *);
+  void (*Clash)(struct HABITAT *, int, int);
+  void (*SetCurrSurvivor)(struct HABITAT *, int, int);
+  void (*PrintWinner)(struct HABITAT *);
+  void (*DeleteHabitat)(struct HABITAT *);
 };
-typedef struct HABITAT* Habitat;
+typedef struct HABITAT *Habitat;
 
 Habitat NewHabitat();
 void PrintHabitat(const Habitat);
 void Clash(const Habitat, int, int);
 void SetCurrSurvivor(const Habitat, int, int);
+void PrintWinner(const Habitat);
 void DeleteHabitat(const Habitat);
 
 #endif
