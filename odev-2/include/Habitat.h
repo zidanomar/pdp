@@ -5,6 +5,7 @@
 #include "Bocek.h"
 #include "Sinek.h"
 #include "Pire.h"
+#include "FileUtil.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -35,7 +36,7 @@ struct HABITAT
 {
   struct Tile **tiles;
   int ROWS;
-  int COLS;
+  int *COL_IDX;
   int currSurvivor[2];
 
   void (*PrintHabitat)(struct HABITAT *);

@@ -1,22 +1,29 @@
 #include "Habitat.h"
 
-int initialTiles[4][5] = {
-    {10, 2, 5, 4, 7},
-    {21, 6, 1, 25, 8},
-    {11, 64, 33, 41, 47},
-    {8, 1, 9, 5, 23}};
 
-struct Tile **generateTiles(int rows, int cols)
+
+struct Tile **generateTiles(Habitat this, char *filename)
 {
+  int rows = 0;
+  int **initialTiles = ReadFile(filename, &rows);
   struct Tile **tiles = (struct Tile **)malloc(rows * sizeof(struct Tile *));
-  for (int i = 0; i < rows; ++i)
-  {
-    tiles[i] = (struct Tile *)malloc(cols * sizeof(struct Tile));
-  }
+  int *colIdx = (int *)malloc(rows * sizeof(int));
+  printf("rows: %d\n", rows);
 
   for (int i = 0; i < rows; i++)
   {
-    for (int j = 0; j < cols; j++)
+    int size = 0;
+    while (initialTiles[i][size] != '\0')
+    {
+      printf("%d ", initialTiles[i][size]);
+      size++;
+    }
+    printf("\n");
+    tiles[i] = (struct Tile *)malloc(size * sizeof(struct Tile));
+    colIdx[i] = size;
+    int j = 0;
+
+    while (initialTiles[i][j] != '\0')
     {
       // Bitki: 1-9
       // Böcek: 10-20
@@ -37,14 +44,19 @@ struct Tile **generateTiles(int rows, int cols)
         tiles[i][j].type = TYPE_SINEK;
         tiles[i][j].data.sinek = NewSinek(initialTiles[i][j], "S");
       }
-      else if (initialTiles[i][j] <= 99)
+      else
       {
         tiles[i][j].type = TYPE_PIRE;
         tiles[i][j].data.pire = NewPire(initialTiles[i][j], "P");
       }
+      j++;
     }
+    free(initialTiles[i]);
   }
+  free(initialTiles);
 
+  this->ROWS = rows;
+  this->COL_IDX = colIdx;
   return tiles;
 }
 
@@ -58,14 +70,12 @@ Habitat NewHabitat()
     return NULL;
   }
 
-  int rows = 4;
-  int cols = 5;
-  this->ROWS = rows;
-  this->COLS = cols;
+  this->ROWS = 0;
   this->currSurvivor[0] = 0;
   this->currSurvivor[1] = 0;
 
-  this->tiles = generateTiles(rows, cols);
+  char *filename = "Veri.txt";
+  this->tiles = generateTiles(this, filename);
 
   this->PrintHabitat = &PrintHabitat;
   this->Clash = &Clash;
@@ -264,7 +274,7 @@ void PrintHabitat(const Habitat this)
 {
   for (int i = 0; i < this->ROWS; i++)
   {
-    for (int j = 0; j < this->COLS; j++)
+    for (int j = 0; j < this->COL_IDX[i]; j++)   
     {
       switch (this->tiles[i][j].type)
       {
@@ -289,9 +299,6 @@ void PrintHabitat(const Habitat this)
   }
   printf("\n");
 };
-
-#include <stdio.h>
-#include <string.h>
 
 void PrintWinner(const Habitat this)
 {
@@ -324,9 +331,9 @@ void Fight(const Habitat this)
 {
   for (int row = 0; row < this->ROWS; row++)
   {
-    for (int col = 0; col < this->COLS; col++)
+    for (int col = 0; col < this->COL_IDX[row]; col++)
     {
-      if (col == this->COLS - 1)
+      if (col == this->COL_IDX[row] - 1)
       {
         if (row == this->ROWS - 1)
         {
@@ -354,7 +361,7 @@ void DeleteHabitat(const Habitat this)
   {
     for (int i = 0; i < this->ROWS; i++)
     {
-      for (int j = 0; j < this->COLS; j++)
+      for (int j = 0; j < this->COL_IDX[i]; j++)
       {
         switch (this->tiles[i][j].type)
         {
@@ -377,6 +384,7 @@ void DeleteHabitat(const Habitat this)
       free(this->tiles[i]);
     }
     free(this->tiles);
+    free(this->COL_IDX);
     free(this);
   }
 }
