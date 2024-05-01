@@ -42,6 +42,7 @@ struct HABITAT
   void (*Clash)(struct HABITAT *, int, int);
   void (*SetCurrSurvivor)(struct HABITAT *, int, int);
   void (*PrintWinner)(struct HABITAT *);
+  void (*Fight)(struct HABITAT *);
   void (*DeleteHabitat)(struct HABITAT *);
 };
 typedef struct HABITAT *Habitat;
@@ -51,6 +52,7 @@ void PrintHabitat(const Habitat);
 void Clash(const Habitat, int, int);
 void SetCurrSurvivor(const Habitat, int, int);
 void PrintWinner(const Habitat);
+void Fight(const Habitat);
 void DeleteHabitat(const Habitat);
 
 #endif

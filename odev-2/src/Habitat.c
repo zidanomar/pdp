@@ -71,6 +71,7 @@ Habitat NewHabitat()
   this->Clash = &Clash;
   this->SetCurrSurvivor = &SetCurrSurvivor;
   this->PrintWinner = &PrintWinner;
+  this->Fight = &Fight;
   this->DeleteHabitat = &DeleteHabitat;
   return this;
 }
@@ -231,7 +232,7 @@ void Clash(Habitat habitat, int nextRow, int nextCol)
       tile1.data.pire->KillPire(tile1.data.pire);
       habitat->SetCurrSurvivor(habitat, nextRow, nextCol);
     case TYPE_PIRE:
-      if(tile1.data.pire->super->super->life > tile2.data.pire->super->super->life || tile1.data.pire->super->super->life == tile2.data.pire->super->super->life)
+      if (tile1.data.pire->super->super->life > tile2.data.pire->super->super->life || tile1.data.pire->super->super->life == tile2.data.pire->super->super->life)
       {
         // tile2.data.pire->super->super->KillCanli(tile2.data.pire->super->super);
         tile2.data.pire->KillPire(tile2.data.pire);
@@ -317,6 +318,34 @@ void PrintWinner(const Habitat this)
   }
 
   printf("Kazanan: %s : (%d,%d)\n", winnerID, row, col);
+}
+
+void Fight(const Habitat this)
+{
+  for (int row = 0; row < this->ROWS; row++)
+  {
+    for (int col = 0; col < this->COLS; col++)
+    {
+      if (col == this->COLS - 1)
+      {
+        if (row == this->ROWS - 1)
+        {
+          break;
+        }
+        else
+        {
+          this->Clash(this, row + 1, 0);
+          this->PrintHabitat(this);
+        }
+      }
+      else
+      {
+        this->Clash(this, row, col + 1);
+        this->PrintHabitat(this);
+      }
+    }
+  }
+  this->PrintWinner(this);
 }
 
 void DeleteHabitat(const Habitat this)
