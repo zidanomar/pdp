@@ -8,17 +8,15 @@ struct Tile **generateTiles(Habitat this, char *filename)
   int **initialTiles = ReadFile(filename, &rows);
   struct Tile **tiles = (struct Tile **)malloc(rows * sizeof(struct Tile *));
   int *colIdx = (int *)malloc(rows * sizeof(int));
-  printf("rows: %d\n", rows);
 
   for (int i = 0; i < rows; i++)
   {
     int size = 0;
     while (initialTiles[i][size] != '\0')
     {
-      printf("%d ", initialTiles[i][size]);
       size++;
     }
-    printf("\n");
+
     tiles[i] = (struct Tile *)malloc(size * sizeof(struct Tile));
     colIdx[i] = size;
     int j = 0;
@@ -342,12 +340,14 @@ void Fight(const Habitat this)
         else
         {
           this->Clash(this, row + 1, 0);
+          printf("\e[1;1H\e[2J");
           this->PrintHabitat(this);
         }
       }
       else
       {
         this->Clash(this, row, col + 1);
+        printf("\e[1;1H\e[2J");
         this->PrintHabitat(this);
       }
     }
