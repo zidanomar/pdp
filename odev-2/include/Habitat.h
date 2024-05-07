@@ -5,7 +5,6 @@
 #include "Bocek.h"
 #include "Sinek.h"
 #include "Pire.h"
-#include "FileUtil.h"
 
 #include <stdio.h>
 #include <string.h>

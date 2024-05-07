@@ -9,9 +9,7 @@ SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(LIB_DIR)/%.o, $(SRCS))
 TARGET = $(BIN_DIR)/Test
 
-.PHONY: all clean compile run
-
-all: clean compile run
+all: compile run
 
 compile: $(TARGET)
 

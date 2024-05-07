@@ -1,60 +1,92 @@
 #include "Habitat.h"
 
+#define INITIAL_SIZE 100
 
-
-struct Tile **generateTiles(Habitat this, char *filename)
+struct Tile **generateTiles(Habitat this)
 {
-  int rows = 0;
-  int **initialTiles = ReadFile(filename, &rows);
-  struct Tile **tiles = (struct Tile **)malloc(rows * sizeof(struct Tile *));
-  int *colIdx = (int *)malloc(rows * sizeof(int));
-
-  for (int i = 0; i < rows; i++)
+  FILE *file = fopen("Veri.txt", "r");
+  if (file == NULL)
   {
-    int size = 0;
-    while (initialTiles[i][size] != '\0')
+    printf("Error opening file.\n");
+    exit(1);
+  }
+
+  int rows = 0;
+  int capacity = INITIAL_SIZE;
+  struct Tile **tiles = malloc(capacity * sizeof(struct Tile *));
+  int *cols = malloc(capacity * sizeof(int));
+
+  char *line = NULL;
+  size_t len = 0;
+
+  while (getline(&line, &len, file) != -1)
+  {
+    if (rows >= capacity)
     {
-      size++;
+      capacity *= 2;
+      tiles = realloc(tiles, capacity * sizeof(struct Tile *));
+      cols = realloc(cols, capacity * sizeof(int));
+      if (tiles == NULL || cols == NULL)
+      {
+        printf("Memory allocation failed.\n");
+        exit(1);
+      }
     }
 
-    tiles[i] = (struct Tile *)malloc(size * sizeof(struct Tile));
-    colIdx[i] = size;
-    int j = 0;
+    int tiles_count = 0;
+    struct Tile *tile = malloc(INITIAL_SIZE * sizeof(struct Tile));
 
-    while (initialTiles[i][j] != '\0')
+    char *token = strtok(line, " ");
+    while (token != NULL)
     {
-      // Bitki: 1-9
-      // Böcek: 10-20
-      // Sinek: 21-50
-      // Pire: 51-99
-      if (initialTiles[i][j] <= 9)
+      if (tiles_count >= INITIAL_SIZE)
       {
-        tiles[i][j].type = TYPE_BITKI;
-        tiles[i][j].data.bitki = NewBitki(initialTiles[i][j], "B");
+        tile = realloc(tile, 2 * INITIAL_SIZE * sizeof(struct Tile));
+        if (tile == NULL)
+        {
+          printf("Memory allocation failed.\n");
+          exit(1);
+        }
       }
-      else if (initialTiles[i][j] <= 20)
+
+      int val = atoi(token);
+      struct Tile new_tile;
+
+      if (val <= 9)
       {
-        tiles[i][j].type = TYPE_BOCEK;
-        tiles[i][j].data.bocek = NewBocek(initialTiles[i][j], "C");
+        new_tile.type = TYPE_BITKI;
+        new_tile.data.bitki = NewBitki(val, "B");
       }
-      else if (initialTiles[i][j] <= 50)
+      else if (val <= 20)
       {
-        tiles[i][j].type = TYPE_SINEK;
-        tiles[i][j].data.sinek = NewSinek(initialTiles[i][j], "S");
+        new_tile.type = TYPE_BOCEK;
+        new_tile.data.bocek = NewBocek(val, "C");
+      }
+      else if (val <= 50)
+      {
+        new_tile.type = TYPE_SINEK;
+        new_tile.data.sinek = NewSinek(val, "S");
       }
       else
       {
-        tiles[i][j].type = TYPE_PIRE;
-        tiles[i][j].data.pire = NewPire(initialTiles[i][j], "P");
+        new_tile.type = TYPE_PIRE;
+        new_tile.data.pire = NewPire(val, "P");
       }
-      j++;
+
+      tile[tiles_count++] = new_tile;
+      token = strtok(NULL, " ");
     }
-    free(initialTiles[i]);
+
+    tiles[rows] = tile;
+    cols[rows++] = tiles_count;
   }
-  free(initialTiles);
+
+  fclose(file);
+  free(line);
 
   this->ROWS = rows;
-  this->COL_IDX = colIdx;
+  this->COL_IDX = cols;
+
   return tiles;
 }
 
@@ -68,12 +100,11 @@ Habitat NewHabitat()
     return NULL;
   }
 
-  this->ROWS = 0;
   this->currSurvivor[0] = 0;
   this->currSurvivor[1] = 0;
 
   char *filename = "Veri.txt";
-  this->tiles = generateTiles(this, filename);
+  this->tiles = generateTiles(this);
 
   this->PrintHabitat = &PrintHabitat;
   this->Clash = &Clash;
@@ -272,7 +303,7 @@ void PrintHabitat(const Habitat this)
 {
   for (int i = 0; i < this->ROWS; i++)
   {
-    for (int j = 0; j < this->COL_IDX[i]; j++)   
+    for (int j = 0; j < this->COL_IDX[i]; j++)
     {
       switch (this->tiles[i][j].type)
       {
@@ -325,6 +356,19 @@ void PrintWinner(const Habitat this)
   printf("Kazanan: %s : (%d,%d)\n", winnerID, row, col);
 }
 
+// Aktif olarak linux kullandığım için
+// windows için cls ekledim
+#ifdef _WIN32
+#define CLEAR_COMMAND "cls"
+#else
+#define CLEAR_COMMAND "clear"
+#endif
+
+void clearScreen()
+{
+  system(CLEAR_COMMAND);
+}
+
 void Fight(const Habitat this)
 {
   for (int row = 0; row < this->ROWS; row++)
@@ -340,14 +384,14 @@ void Fight(const Habitat this)
         else
         {
           this->Clash(this, row + 1, 0);
-          printf("\e[1;1H\e[2J");
+          clearScreen();
           this->PrintHabitat(this);
         }
       }
       else
       {
         this->Clash(this, row, col + 1);
-        printf("\e[1;1H\e[2J");
+        clearScreen();
         this->PrintHabitat(this);
       }
     }

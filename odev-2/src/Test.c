@@ -1,7 +1,5 @@
 #include "Habitat.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 
 int main()
@@ -13,7 +11,7 @@ int main()
     printf("\nCurrent Habitat:\n");
 
     h->PrintHabitat(h);
-    
+
     printf("Press any key to continue...\n");
     getchar();
 
@@ -24,6 +22,7 @@ int main()
     h->DeleteHabitat(h);
 
     printf("Time taken: %f\n",
-        ((double)t1) / CLOCKS_PER_SEC);
+           ((double)t1) / CLOCKS_PER_SEC);
+
     return 0;
 }
